@@ -68,6 +68,8 @@ defmodule CodeCollabWeb.Router do
       on_mount: [{CodeCollabWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/code_editor", LiveCodeLive
     end
   end
 
