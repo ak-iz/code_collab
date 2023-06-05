@@ -1,0 +1,41 @@
+<.header>
+  Listing Live codes
+  <:actions>
+    <.link patch={~p"/live_codes/new"}>
+      <.button>New Live code</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="live_codes"
+  rows={@streams.live_codes}
+  row_click={fn {_id, live_code} -> JS.navigate(~p"/live_codes/#{live_code}") end}
+>
+  <:col :let={{_id, live_code}} label="Code"><%= live_code.code %></:col>
+  <:action :let={{_id, live_code}}>
+    <div class="sr-only">
+      <.link navigate={~p"/live_codes/#{live_code}"}>Show</.link>
+    </div>
+    <.link patch={~p"/live_codes/#{live_code}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, live_code}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: live_code.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="live_code-modal" show on_cancel={JS.patch(~p"/live_codes")}>
+  <.live_component
+    module={CodeCollabWeb.LiveCodeLive.FormComponent}
+    id={@live_code.id || :new}
+    title={@page_title}
+    action={@live_action}
+    live_code={@live_code}
+    patch={~p"/live_codes"}
+  />
+</.modal>
